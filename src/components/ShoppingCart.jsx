@@ -4,102 +4,71 @@ const PRODUCTOS_DISPONIBLES = [
   { id: 1, nombre: "Camisa Undergold", precio: 150 },
   { id: 2, nombre: "Short Sicknation", precio: 200 },
   { id: 3, nombre: "Pantalon Mattelsa", precio: 90 },
-  { id: 3, nombre: "Gorra el Barbas", precio: 40 },
-  { id: 3, nombre: "Outfit Weedgreen", precio: 900 },
+  { id: 4, nombre: "Gorra el Barbas", precio: 40 },
+  { id: 5, nombre: "Outfit Weedgreen", precio: 900 },
 ];
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (producto) => {
-    setCart((prevCart) => {
-      const existe = prevCart.find((item) => item.id === producto.id);
-      if (existe) {
-        return prevCart.map((item) =>
-          item.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { ...producto, cantidad: 1 }];
-    });
-  };
+  // 1. AGREGAR PRODUCTO
+  function addToCart(producto) {
+    const existe = cart.find((item) => item.id === producto.id);
 
-  const updateQuantity = (id, valor) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, cantidad: Math.max(1, item.cantidad + valor) }
+    if (existe) {
+      const nuevoCarrito = cart.map((item) =>
+        item.id === producto.id
+          ? { ...item, cantidad: item.cantidad + 1 }
           : item
-      )
-    );
-  };
+      );
+      setCart(nuevoCarrito);
+    } else {
+      setCart([...cart, { ...producto, cantidad: 1 }]);
+    }
+  }
 
-  const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  };
+  // 2. ELIMINAR PRODUCTO
+  function removeItem(id) {
+    const nuevoCarrito = cart.filter((item) => item.id !== id);
+    setCart(nuevoCarrito);
+  }
 
-  const totalPrecio = cart.reduce(
-    (acc, item) => acc + item.precio * item.cantidad,
-    0
-  );
-  const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
+  // 3. CALCULAR TOTALES
+  let precioFinal = 0;
+  let totalArticulos = 0;
+
+  cart.forEach((item) => {
+    precioFinal = precioFinal + item.precio * item.cantidad;
+    totalArticulos = totalArticulos + item.cantidad;
+  });
 
   return (
-    <div
-      className="cart-container"
-      style={{ textAlign: "left", padding: "1rem" }}
-    >
-      <h2>Productos</h2>
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        {PRODUCTOS_DISPONIBLES.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => addToCart(p)}
-            style={{ padding: "10px", cursor: "pointer" }}
-          >
-            Añadir {p.nombre} (${p.precio})
-          </button>
-        ))}
-      </div>
+    <div>
+      <h2>Productos Disponibles</h2>
+      {PRODUCTOS_DISPONIBLES.map((p) => (
+        <button key={p.id} onClick={() => addToCart(p)}>
+          Comprar {p.nombre} (${p.precio})
+        </button>
+      ))}
 
       <hr />
 
-      <h2>El carrito de comrpas ({totalItems} productos)</h2>
+      <h2>Mi Carrito ({totalArticulos} items)</h2>
+
       {cart.length === 0 ? (
-        <p>no tienes nada en el carro</p>
+        <p>Tu carrito está vacío</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul>
           {cart.map((item) => (
-            <li
-              key={item.id}
-              style={{
-                marginBottom: "10px",
-                borderBottom: "1px solid #eee",
-                paddingBottom: "10px",
-              }}
-            >
-              <strong>{item.nombre}</strong> - ${item.precio} c/u
-              <br />
-              Subtotal: <strong>${item.precio * item.cantidad}</strong>
-              <div style={{ marginTop: "5px" }}>
-                <button onClick={() => updateQuantity(item.id, 1)}> + </button>
-                <span style={{ margin: "0 10px" }}>
-                  Cantidad: {item.cantidad}
-                </span>
-                <button onClick={() => updateQuantity(item.id, -1)}> - </button>
-                <button
-                  onClick={() => removeItem(item.id)}
-                  style={{ marginLeft: "20px", color: "red" }}
-                >
-                  Eliminar
-                </button>
-              </div>
+            <li key={item.id}>
+              {item.nombre} - Cantidad: {item.cantidad}
+              <button onClick={() => removeItem(item.id)}>X</button>
             </li>
           ))}
         </ul>
       )}
-      <h3>caunto tenes que pagar pues{totalPrecio}</h3>
+
+      <h3>Total a pagar: ${precioFinal}</h3>
     </div>
   );
 }
