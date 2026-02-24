@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 const PRODUCTOS_DISPONIBLES = [
-  { id: 1, nombre: "Monitor Gamer", precio: 300 },
-  { id: 2, nombre: "Teclado Mecánico", precio: 80 },
-  { id: 3, nombre: "Mouse Pro", precio: 50 },
+  { id: 1, nombre: "Camisa Undergold", precio: 150 },
+  { id: 2, nombre: "Short Sicknation", precio: 200 },
+  { id: 3, nombre: "Pantalon Mattelsa", precio: 90 },
+  { id: 3, nombre: "Gorra el Barbas", precio: 40 },
+  { id: 3, nombre: "Outfit Weedgreen", precio: 900 },
 ];
 
 export default function ShoppingCart() {
@@ -37,7 +39,6 @@ export default function ShoppingCart() {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Estado derivado: Cálculos automáticos
   const totalPrecio = cart.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
     0
@@ -64,9 +65,9 @@ export default function ShoppingCart() {
 
       <hr />
 
-      <h2>Carrito 🛒 ({totalItems} productos)</h2>
+      <h2>El carrito de comrpas ({totalItems} productos)</h2>
       {cart.length === 0 ? (
-        <p>El carrito está vacío</p>
+        <p>no tienes nada en el carro</p>
       ) : (
         <ul style={{ listStyle: "none", padding: 0 }}>
           {cart.map((item) => (

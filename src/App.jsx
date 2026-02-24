@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
-      <h1>Mi Tienda React</h1>
+      <h1>La Tienda de compras</h1>
 
       <ShoppingCart />
     </div>
